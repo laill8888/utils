@@ -1,0 +1,15 @@
+*.idea/
+*.iml
+*.class
+*target/
+*logs
+generatorConfig.xml
+*.log
+*.log.*
+*.cache
+*.lock
+.project
+/build/
+/learn-vue2.x/
+*.html
+*.settings
