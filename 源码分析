@@ -1,0 +1,512 @@
+## Java基础篇
+### String、StringBuilder、StringBuffer
+#### String 
+1、类签名
+```
+public final class String
+    implements java.io.Serializable, Comparable<String>, CharSequence
+desc:修饰符final说明String类为最终类，不能被继承。
+    为什么说是不可变类？？
+    1、String是final类，不可继承。
+    2、字符数组成员变量value使用final修饰，也就是常量，常量一大好处就是线程安全，所以String不需要考虑线程。
+    实现了序列化接口、比较接口、字符序列接口    
+``` 
+2、构造方法
+提供16个构造方法。
+
+3、存储
+```
+private final char value[];
+使用常量字符存储字符串值。
+```
+4、主要方法
+```
+1、获得字符串的长度
+public int length() {
+    return value.length;
+}
+2、判断是否是空字符串
+public boolean isEmpty() {
+     return value.length == 0;
+}
+3、获得指定下标的字符
+public char charAt(int index) {
+    //判断下标是否越界异常
+    if ((index < 0) || (index >= value.length)) {
+                throw new StringIndexOutOfBoundsException(index);
+    }
+    return value.[index];
+}
+4、getChars
+将字符串中的字符复制到目标的字符数组中，就是一种替换。
+5、getBytes
+得到字节数组byte[]
+6、equals 
+ **比较内容**
+ public boolean equals(Object anObject) {
+        //首先判断是不是同一个对象
+        if (this == anObject) {
+            return true;
+        }
+        //判断是不是字符串对象
+        if (anObject instanceof String) {
+            String anotherString = (String)anObject;
+            int n = value.length;
+            //判断长度是否相同
+            if (n == anotherString.value.length) {
+                char v1[] = value;
+                char v2[] = anotherString.value;
+                int i = 0;
+                //循环比较单个字符是否相同
+                while (n-- != 0) {
+                    if (v1[i] != v2[i])
+                        return false;
+                    i++;
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+7、equalsIgnoreCase
+**忽略大小比较内容**
+8、compareTo
+按照字典顺序比较字符串
+返回两个字符串中相同位置ascii码的差值。
+9、
+indexOf(String c)
+返回第一次出现该字符的下标
+indexOf(int ch)
+返回第一次出现该字符的下标,ch为指定字符对应的ASCII码值
+10、startsWith
+测试字符串指定下标下的字符是否与该字符相同，true/false
+11、lastIndexOf
+指定字符最后出现时的下标
+12、截取字符串
+substring(int beginIndex)
+substring(int beginIndex, int endIndex) 左闭右开
+13、concat(String string)
+将指定的字符串连接到此字符串的末尾
+14、contains
+测试字符串是否含有字串
+15、 根据给定的字符串拆分为数组
+String[] split(String regex, int limit) //从limit下标开始拆分
+String[] split(String regex)
+16、join(CharSequence delimiter, CharSequence... elements)
+根据指定的连接符连接字符串
+17、trim()
+删除前后空格字符
+18、native String intern()
+返回字符串对象的规范化表示形式。
+对于任意两个字符串 s 和 t，当且仅当 s.equals(t) 为 true 时，s.intern() == t.intern() 才为 true。
+```
+
+#### StringBuilder
+1、类签名
+```
+public final class StringBuilder
+    extends AbstractStringBuilder
+    implements java.io.Serializable, CharSequence{}
+final修饰符，该类不能被继承。
+StringBuffer、StringBuilder 都继承AbstractStringBuilder类。    
+    
+```    
+2、构造方法
+四个,默认容量为16
+```
+    public StringBuilder() {
+        super(16);
+    }
+    public StringBuilder(int capacity) {
+        super(capacity);
+    }
+    
+    public StringBuilder(String str) {
+        super(str.length() + 16);
+        append(str);
+    }
+
+    public StringBuilder(CharSequence seq) {
+        this(seq.length() + 16);
+        append(seq);
+    }
+    
+   成员变量：
+    char[] value;
+    int count;
+    多线程同时修改成员变量值，线程不安全。无final修饰符，可变类，stringbuffer也是可变类。
+```
+3、主要方法
+```
+1、append(...)
+2、public StringBuilder delete(int start, int end)
+删除指定下标之间(左闭右开)的字符串
+3、insert
+插入字串，从指定的下标开始。。。
+4、reverse()
+颠倒字符串
+```
+#### StringBuffer
+1、方法签名
+```
+ public final class StringBuffer
+    extends AbstractStringBuilder
+    implements java.io.Serializable, CharSequence{
+    }
+final修饰符，该类不能被继承。
+StringBuffer、StringBuilder 都继承AbstractStringBuilder类。      
+```
+2、构造方法
+```
+    public StringBuffer() {
+        super(16);
+    }
+    public StringBuffer(int capacity) {
+        super(capacity);
+    }
+    public StringBuffer(String str) {
+        super(str.length() + 16);
+        append(str);
+    }
+    public StringBuffer(CharSequence seq) {
+        this(seq.length() + 16);
+        append(seq);
+    }
+```
+3、主要方法
+```
+public synchronized StringBuffer append(String str) {}
+方法都加了synchronized修饰符，保证线程安全。
+```
+#### 操作字符串类总结
+* String为不可变类，StringBuilder、StringBuffer为可变类。
+* StringBuilder为线程不安全、StringBuffer为线程安全。
+* StringBuilder比StringBuffer效率高得多。
+* 字符串操作拼接使用StringBuilder、StringBuffer，不要使用String拼接，会产生无用字符串对象。
+* 三者都在Java.lang包下。
+
+### 集合
+集合类位于Java.util包下。。
+List、Set、Queue接口继承Collection接口，Collection继承了Iterable.
+```
+jdk8新特性：
+    函数式接口其实本质上还是一个接口，但是它是一种特殊的接口：
+        SAM类型的接口（Single Abstract Method）。
+        定义了这种类型的接口，使得以其为参数的方法，可以在调用时，
+        使用一个lambda表达式作为参数。从另一个方面说，一旦我们调用某方法，
+        可以传入lambda表达式作为参数，则这个方法的参数类型，必定是一个函数式的接口，
+        这个类型必定会使用@FunctionalInterface进行修饰。
+　　从SAM原则上讲，这个接口中，只能有一个函数需要被实现，但是也可以有如下例外:
+　　　　1. 默认方法与静态方法并不影响函数式接口的契约，可以任意使用，即
+　　　　　　函数式接口中可以有静态方法，一个或者多个静态方法不会影响SAM接口成为函数式接口，并且静态方法可以提供方法实现
+　　　　　　可以由 default 修饰的默认方法方法，这个关键字是Java8中新增的，
+            为的目的就是使得某一些接口，原则上只有一个方法被实现，但是由于历史原因，
+            不得不加入一些方法来兼容整个JDK中的API，所以就需要使用default关键字来定义这样的方法
+　　　　2. 可以有 Object 中覆盖的方法，也就是 equals，toString，hashcode等方法。
+iterable接口只提供三个方法
+public interface Iterable<T> {
+    //返回集合的迭代器
+    Iterator<T> iterator();
+    //默认方法 since jdk8
+    //使用Lambda表达式迭代集合
+    default void forEach(Consumer<? super T> action) {
+        Objects.requireNonNull(action);
+        for (T t : this) {
+            action.accept(t);
+        }
+    }
+    //默认方法 since jdk8
+    default Spliterator<T> spliterator() {
+        return Spliterators.spliteratorUnknownSize(iterator(), 0);
+    }
+}
+Collection接口提供集合基本操作方法，增删、大小、判空等等方法
+public interface Collection<E> extends Iterable<E> {
+int size();
+boolean isEmpty();
+boolean add(E e);
+boolean add(E e);
+<T> T[] toArray(T[] a);
+boolean addAll(Collection<? extends E> c);
+}
+```
+Map类均实现Map接口。 
+#### List
+```
+List接口，在Collection接口基础上，新增List特有的方法
+public interface List<E> extends Collection<E> {
+    E get(int index);
+    E set(int index, E element);
+    void add(int index, E element);
+}
+
+1、ArrayList：
+**方法签名：**
+public class ArrayList<E> extends AbstractList<E>
+        implements List<E>, RandomAccess, Cloneable, java.io.Serializable
+{
+ // 默认的容量大小10
+ private static final int DEFAULT_CAPACITY = 10; 
+ 
+ //集合元素存放的方式
+ transient Object[] elementData;
+ 
+** 构造方法：**
+   //指定大小容量的集合，在知道大小的情况下应尽量使用这种方式初始化集合对象
+   //防止容量扩充带来的性能损失。
+    public ArrayList(int initialCapacity) {
+        if (initialCapacity > 0) {
+            this.elementData = new Object[initialCapacity];
+        } else if (initialCapacity == 0) {
+            this.elementData = EMPTY_ELEMENTDATA;
+        } else {
+            throw new IllegalArgumentException("Illegal Capacity: "+
+                                               initialCapacity);
+        }
+    }
+    //初始化一个容量为10的空集合，
+    public ArrayList() {
+        this.elementData = DEFAULTCAPACITY_EMPTY_ELEMENTDATA;
+    }
+    //基于一个集合初始化一个新集合对象
+     public ArrayList(Collection<? extends E> c) {
+        elementData = c.toArray();
+        if ((size = elementData.length) != 0) {
+            // c.toArray might (incorrectly) not return Object[] (see 6260652)
+            if (elementData.getClass() != Object[].class)
+                elementData = Arrays.copyOf(elementData, size, Object[].class);
+        } else {
+            // replace with empty array.
+            this.elementData = EMPTY_ELEMENTDATA;
+        }
+    }
+}
+**主要方法：**
+1、添加新元素
+ public boolean add(E e) {}
+2、设置新值，即替换值，返回旧值
+public E set(int index, E element) {}
+3、移除元素，返回移除元素值
+public E remove(int index) {}
+4、保留集合中的元素，其余都移除
+ public boolean retainAll(Collection<?> c) {}
+5、截取子集合
+public List<E> subList(int fromIndex, int toIndex) { }
+采用内部类机制，子元素的添加、删除都会影响父集合。
+6、jdk8移除元素
+ list.removeIf(test -> test.equals("1"));
+
+
+
+** 总结 **
+1、线程不安全
+2、有序，数据存储时有序
+3、ArrayList的底层数据结构就是一个大小可变的数组，数组元素的类型为Object类型，对ArrayList的所有操作底层都是基于数组的。
+4、不要在for循环中remove元素，remove时会同时改变集合的大小，应该使用迭代器
+5、随机访问效率较高，因为移除元素需要移动元素位置，所以移除元素效率较低
+6、移除操作将该位置的元素置为null,让gc工作回收，源码如下：
+  elementData[--size] = null; // clear to let GC do its work
+7、jdk8提供foreach循环遍历集合
+ list.forEach(string-> System.out.println(string));
+8、允许多个元素为null。
+9、允许元素重复。
+
+2、LinkedList
+
+**方法签名：**
+public class LinkedList<E>
+    extends AbstractSequentialList<E>
+    implements List<E>, Deque<E>, Cloneable, java.io.Serializable
+{
+    transient int size = 0;
+
+    /**
+     * Pointer to first node.
+     * Invariant: (first == null && last == null) ||
+     *            (first.prev == null && first.item != null)
+     */
+    transient Node<E> first;
+
+    /**
+     * Pointer to last node.
+     * Invariant: (first == null && last == null) ||
+     *            (last.next == null && last.item != null)
+     */
+    transient Node<E> last;
+} 
+**构造方法**
+    public LinkedList() {
+    }
+    public LinkedList(Collection<? extends E> c) {
+        this();
+        addAll(c);
+    }
+**主要方法**
+1、添加节点
+    public boolean add(E e) {
+            linkLast(e);
+            return true;
+    }
+    void linkLast(E e) {
+        final Node<E> l = last;
+        final Node<E> newNode = new Node<>(l, e, null);
+        last = newNode;
+        if (l == null)
+            first = newNode;
+        else
+            l.next = newNode;
+        size++;
+        modCount++;
+    }
+    //内部节点类Node
+    Node(Node<E> prev, E element, Node<E> next) {
+            this.item = element;//本节点的存储值
+            this.next = next;//指向下一个节点
+            this.prev = prev;//指向前一个节点
+    }
+2、获得最后一个节点
+public E getLast() {}
+3、获得第一个节点
+public E getFirst() {}
+
+**总结** 
+1、底层是双向链表结构。
+2、允许多个元素为null。
+3、线程不安全。
+4、插入、删除LinkedList效率高
+5、允许元素重复
+
+3、Vector 向量
+public class Vector<E>
+    extends AbstractList<E>
+    implements List<E>, RandomAccess, Cloneable, java.io.Serializable
+{
+    //底层存储结构
+    protected Object[] elementData;
+    protected int elementCount;
+}
+**总结**
+1、线程安全的。
+    增删等操作都加了锁的机制，确保线程安全。
+    public synchronized void addElement(E obj) {
+        modCount++;
+        ensureCapacityHelper(elementCount + 1);
+        elementData[elementCount++] = obj;
+    }
+
+2、底层数据结构是可扩展的数组。
+3、因为锁的原因，效率低下。
+4、有序的。
+5、允许元素为null。
+6、允许元素重复。
+
+**ArrayList vs LinkedList vs Vector**
+1、ArrayList、Vector底层都是数组，LinkedList底层是双向链表
+2、对于查询，因为LinkedList要移动指针，所以ArrayList效率高、更新因为要先查询，所以
+ArrayList效率高，对于插入、删除，因为ArrayList要移动数据，所以LinkedList效率高
+3、ArrayList、LinkedList都是线程不安全，Vector线程安全的。 
+```
+#### Set
+```
+**类签名：**
+public class HashSet<E>
+    extends AbstractSet<E>
+    implements Set<E>, Cloneable, java.io.Serializable
+{
+ //hashSet底层使用HashMap存储值
+ private transient HashMap<E,Object> map;
+}
+**构造方法：**
+    public HashSet() {
+        map = new HashMap<>();
+    }
+    public HashSet(Collection<? extends E> c) {
+        map = new HashMap<>(Math.max((int) (c.size()/.75f) + 1, 16));
+        addAll(c);
+    }
+    public HashSet(int initialCapacity, float loadFactor) {
+        map = new HashMap<>(initialCapacity, loadFactor);
+    }
+    public HashSet(int initialCapacity) {
+        map = new HashMap<>(initialCapacity);
+    }
+    HashSet(int initialCapacity, float loadFactor, boolean dummy) {
+        map = new LinkedHashMap<>(initialCapacity, loadFactor);
+    }
+**主要方法：**
+1、添加元素
+    //以元素作为key,new Object()作为值存储在hashmap中
+    public boolean add(E e) {
+        return map.put(e, PRESENT)==null;
+    }
+
+
+
+**总结**
+1、不允许元素重复。
+2、允许为null，最多一个null。
+3、无序的。
+4、底层通过hashMap实现的。
+5、线程不安全的。
+6、存储在hashmap中key不相同，value同一个。
+```
+#### Queue
+队列
+```
+1、优先级队列--PriorityQueue
+**方法签名**
+    public class PriorityQueue<E> extends AbstractQueue<E>
+            implements java.io.Serializable {
+        //底层存储结构    
+        transient Object[] queue; 
+        //队列的大小
+        private int size = 0;
+    }
+**主要方法：**
+//获取队列队头元素，不删除
+public E peek() {}
+//删除元素并返回删除的元素
+public E poll() {}
+
+
+**总结**
+1、底层数据结构是数组。
+2、线程不安全。
+```
+#### Map
+```
+1、HashMap
+**类签名**
+public class HashMap<K,V> extends AbstractMap<K,V>
+    implements Map<K,V>, Cloneable, Serializable {
+    
+}
+**总结**
+1、线程不安全。
+2、key允许为null，值允许为null。
+3、底层数据结构是数组+单链表的组合，以键值对(key-value)的形式存储元素的。
+4、解决hash冲突 HashMap使用链地址法来解决hash冲突
+
+2、HashTable
+    **类签名**
+    public class Hashtable<K,V>
+    extends Dictionary<K,V>
+        implements Map<K,V>, Cloneable, java.io.Serializable {
+    }
+    **总结**
+    1、线程安全的，证明：
+     public synchronized V put(K key, V value) {}
+    2、不允许key、value为null。 否则报空指针异常。
+    3、底层实现都是数组+链表结构实现的
+    
+**HashMap vs HashTable**
+1、HashMap线程不全的，HashTable线程安全的。
+2、HashMap的key、value允许为空，HashTable的key、value不允许
+3、底层实现都是数组+链表结构实现的。
+```
+## 框架篇
+### spring
+
+### springMvc
+
+### mybatis
