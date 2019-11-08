@@ -3,7 +3,7 @@ package com.laill.p8;
 import java.util.*;
 
 /**
- * @program: test
+ * @program: t7_04.test
  * @description:
  * @author: laill
  * @create: 2018/12/10

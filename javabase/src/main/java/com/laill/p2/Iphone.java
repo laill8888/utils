@@ -4,7 +4,7 @@ package com.laill.p2;
 import com.laill.p1.Mobile;
 
 /**
- * @program: test
+ * @program: t7_04.test
  * @description:
  * @author: laill
  * @create: 2018/11/23

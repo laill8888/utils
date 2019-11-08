@@ -294,7 +294,7 @@ public E remove(int index) {}
 public List<E> subList(int fromIndex, int toIndex) { }
 采用内部类机制，子元素的添加、删除都会影响父集合。
 6、jdk8移除元素
- list.removeIf(test -> test.equals("1"));
+ list.removeIf(t7_04.test -> t7_04.test.equals("1"));
 
 
 

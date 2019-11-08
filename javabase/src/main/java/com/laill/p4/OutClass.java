@@ -1,7 +1,7 @@
 package com.laill.p4;
 
 /**
- * @program: test
+ * @program: t7_04.test
  * @description:
  * @author: laill
  * @create: 2018/11/28

@@ -4,7 +4,7 @@ import java.util.LinkedList;
 
 /**
  * 基于LinkedList 实现栈
- * @program: test
+ * @program: t7_04.test
  * @description:
  * @author: laill
  * @create: 2018/12/14
