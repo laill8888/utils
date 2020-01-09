@@ -101,7 +101,9 @@ public class AESUtils {
     }
 
     public static void main(String[] args) throws Exception {
-        SecretKey secretKey = loadKeyAES(getKeyAES());
+        System.out.println(getKeyAES());
+        System.out.println(getKeyAES());
+        SecretKey secretKey = loadKeyAES("RoAtHKx9p1il1eglgivPsA==");
         String s1 = Base64Util.byte2base64(encryptAES("12345".getBytes(), secretKey));
         System.out.println("12345经过AES加密算法base64编码后：" + s1);
 

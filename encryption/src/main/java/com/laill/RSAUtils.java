@@ -152,10 +152,12 @@ public class RSAUtils {
     public static void main(String[] args) throws Exception {
         KeyPair keyPair = getKeyPair();
         String publicKey = getPublicKey(keyPair);
+        System.out.println("公钥"+publicKey);
         PublicKey pubKey = string2PublicKey(publicKey);
         String s = Base64Util.byte2base64(publicEncrypt("56231".getBytes(), pubKey));
         System.out.println("12345经过RSA机密base64编码后："+s);
         String privateKey = getPrivateKey(keyPair);
+        System.out.println("私钥"+privateKey);
         PrivateKey priKey = string2PrivateKey(privateKey);
         String s2 = new String(privateDncrypt(Base64Util.base642byte(s), priKey));
         System.out.println("解密后：" + s2);
